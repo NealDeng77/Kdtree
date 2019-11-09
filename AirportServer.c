@@ -24,17 +24,8 @@
 //read airport locations file
 int buildTree(struct kdtree *tree);
 
-////compute distance between two locations
-//double distance(double lat1, double lon1, double lat2, double lon2, char unit);
-//
 //find 5 nearest
 void nearest_5(struct kdtree* tree, airportInfo* nearestAirports[], double lat, double lon);
-//
-////convert decimal to radians
-//double deg2rad(double deg);
-//
-////convert radians to decimal
-//double rad2deg(double rad);
 
 int main()
 {
@@ -46,41 +37,23 @@ int main()
 
 	//find 5 nearest airports
 	airportInfo* nearestAirports[NUMOFRESULT];
-	double lat = 40.352206;
-	double lon = -74.657071;
+	double lat = 47.626354;
+	double lon = -122.333145;
 	nearest_5(tree, nearestAirports ,lat, lon);
-
-//	//for debug
-//	for(int i = 0; i < NUMOFRESULT; i++)
-//	{
-//		// print out the retrieved data
-//						printf( "node at (%.3f, %.3f)  and has airport=%s and code=%s and distance is %.3f\n\n",
-//								nearestAirports[i] -> lat, nearestAirports[i] -> lon,  nearestAirports[i] ->airportName, nearestAirports[i]->airportCode, nearestAirports[i]->distance );
-//	}
-
     return 0;
 }
 
 void nearest_5(struct kdtree* tree, airportInfo* nearestAirports[], double lat, double lon)
 {
-//		struct kdtree* tree;
 		airportInfo* pch;
-//		tree = kd_create(DIM);
-//		buildTree(FILENAME, tree);
 		double dist;
 		double pos[DIM] = {lat, lon};
 		double resultpos[DIM];
 		void* presults = kd_nearest_n(tree, pos, NUMOFRESULT);
-//		int count = 0;
 		int index = 0;
-//		// print out all the points found in results
-//		printf( "found %d results:\n", kd_res_size(presults) );
 		while( !kd_res_end( presults ) ) {
 			// get the data and position of the current result item
 			pch = (airportInfo*)kd_res_item( presults, resultpos );
-//			count++;
-//			if(count < 10)
-//			{
 			airportInfo* temp = malloc(sizeof(airportInfo));
 			temp->airportCode = pch->airportCode;
 			temp->airportName = pch->airportName;
@@ -98,7 +71,7 @@ void nearest_5(struct kdtree* tree, airportInfo* nearestAirports[], double lat, 
 					resultpos[0], resultpos[1],  nearestAirports[index]->airportName, nearestAirports[index]->airportCode, dist );
 
 			index++;
-//			}
+
 
 			/* go to the next entry */
 			kd_res_next( presults );
@@ -164,13 +137,6 @@ int buildTree(struct kdtree *tree)
 			temp->lat = lat;
 			temp->lon = lon;
 			temp->distance = 1111111;
-//			if(count == 0)
-//			{
-//				// print out the retrieved data
-//				printf("test build tree");
-//				printf( "node at (%.3f, %.3f)  and has airport=%s and code=%s and distance is %.3f\n\n",
-//						temp->lat, temp->lon,  temp->airportName, temp->airportCode, temp->distance);
-//			}
 
 			double coordi[2];
 			coordi[0] = lat;
@@ -185,49 +151,9 @@ int buildTree(struct kdtree *tree)
 	}
 
 	fclose(file);
-	//for debug
-//	printf("number of nodes:%i", count);
-//	printf("number of blankline:%i", countblank);
 	return 0;
 
 }
-
-///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-///*:: This function converts decimal degrees to radians :*/
-///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-//double deg2rad(double deg)
-//{
-//	return (deg * PI / 180);
-//}
-///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-///*:: This function converts radians to decimal degrees :*/
-///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-//double rad2deg(double rad)
-//{
-//	return (rad * 180 / PI);
-//}
-//
-//double distance(double lat1, double lon1, double lat2, double lon2, char unit)
-//{
-//	double theta, dist;
-//	theta = lon1 - lon2;
-//	dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) *
-//	cos(deg2rad(lat2)) * cos(deg2rad(theta));
-//	dist = acos(dist);
-//	dist = rad2deg(dist);
-//	dist = dist * 60 * 1.1515;
-//	switch(unit) {
-//		case 'M':
-//		break;
-//		case 'K':
-//		dist = dist * 1.609344;
-//		break;
-//		case 'N':
-//		dist = dist * 0.8684;
-//		break;
-//	}
-//	return (dist);
-//}
 
 
 

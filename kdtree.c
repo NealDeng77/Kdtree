@@ -53,6 +53,7 @@ OF SUCH DAMAGE.
 #endif /* pthread support */
 #endif /* use list node allocator */
 #define PI 3.14159265358979323846
+#define STATUTE 1.1507794
 struct kdhyperrect {
     int dim;
     double *min, *max; /* minimum/maximum coords */
