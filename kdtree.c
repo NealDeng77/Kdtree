@@ -52,7 +52,7 @@ OF SUCH DAMAGE.
 
 #endif /* pthread support */
 #endif /* use list node allocator */
-
+#define PI 3.14159265358979323846
 struct kdhyperrect {
     int dim;
     double *min, *max; /* minimum/maximum coords */
@@ -109,6 +109,15 @@ static void free_resnode(struct res_node*);
 #define alloc_resnode() malloc(sizeof(struct res_node))
 #define free_resnode(n) free(n)
 #endif
+
+//compute distance between two locations
+double distance(double lat1, double lon1, double lat2, double lon2, char unit);
+
+//convert decimal to radians
+double deg2rad(double deg);
+
+//convert radians to decimal
+double rad2deg(double rad);
 
 struct kdtree*
 kd_create(int k)
@@ -307,15 +316,18 @@ find_nearest_n(struct kdnode* node, const double* pos, int num, int* size,
     double* dist_max, struct res_node* list, int dim)
 {
     double dist_sq, dx;
-    int i, ret;
+//    int i, ret;
+    int ret;
 
     if (!node)
         return 0;
 
     dist_sq = 0;
-    for (i = 0; i < dim; i++) {
-        dist_sq += SQ(node->pos[i] - pos[i]);
-    }
+//    for (i = 0; i < dim; i++) {
+//        dist_sq += SQ(node->pos[i] - pos[i]);
+//    }
+    dist_sq = distance(node->pos[0], node->pos[1], pos[0], pos[1], 'M');
+
 
     if (dist_sq < *dist_max) {
         if (*size < num) {
@@ -944,4 +956,42 @@ clear_results(struct kdres* rset)
     }
 
     rset->rlist->next = 0;
+}
+
+
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+/*:: This function converts decimal degrees to radians :*/
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+double deg2rad(double deg)
+{
+	return (deg * PI / 180);
+}
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+/*:: This function converts radians to decimal degrees :*/
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+double rad2deg(double rad)
+{
+	return (rad * 180 / PI);
+}
+
+double distance(double lat1, double lon1, double lat2, double lon2, char unit)
+{
+	double theta, dist;
+	theta = lon1 - lon2;
+	dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) *
+	cos(deg2rad(lat2)) * cos(deg2rad(theta));
+	dist = acos(dist);
+	dist = rad2deg(dist);
+	dist = dist * 60 * 1.1515;
+	switch(unit) {
+		case 'M':
+		break;
+		case 'K':
+		dist = dist * 1.609344;
+		break;
+		case 'N':
+		dist = dist * 0.8684;
+		break;
+	}
+	return (dist);
 }

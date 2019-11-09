@@ -120,6 +120,10 @@ void *kd_res_item_data(struct kdres *set);
  */
 double kd_res_dist(struct kdres *set);
 
+/* compute distance
+ */
+double distance(double lat1, double lon1, double lat2, double lon2, char unit);
+
 #ifdef __cplusplus
 }
 #endif

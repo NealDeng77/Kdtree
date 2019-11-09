@@ -24,17 +24,17 @@
 //read airport locations file
 int buildTree(struct kdtree *tree);
 
-//compute distance between two locations
-double distance(double lat1, double lon1, double lat2, double lon2, char unit);
-
+////compute distance between two locations
+//double distance(double lat1, double lon1, double lat2, double lon2, char unit);
+//
 //find 5 nearest
 void nearest_5(struct kdtree* tree, airportInfo* nearestAirports[], double lat, double lon);
-
-//convert decimal to radians
-double deg2rad(double deg);
-
-//convert radians to decimal
-double rad2deg(double rad);
+//
+////convert decimal to radians
+//double deg2rad(double deg);
+//
+////convert radians to decimal
+//double rad2deg(double rad);
 
 int main()
 {
@@ -46,8 +46,8 @@ int main()
 
 	//find 5 nearest airports
 	airportInfo* nearestAirports[NUMOFRESULT];
-	double lat = 40.704235;
-	double lon = -73.917931;
+	double lat = 40.352206;
+	double lon = -74.657071;
 	nearest_5(tree, nearestAirports ,lat, lon);
 
 //	//for debug
@@ -70,35 +70,35 @@ void nearest_5(struct kdtree* tree, airportInfo* nearestAirports[], double lat, 
 		double dist;
 		double pos[DIM] = {lat, lon};
 		double resultpos[DIM];
-		void* presults = kd_nearest_n(tree, pos, NUMOFRESULT + 1);
-		int count = 0;
+		void* presults = kd_nearest_n(tree, pos, NUMOFRESULT);
+//		int count = 0;
 		int index = 0;
 //		// print out all the points found in results
 //		printf( "found %d results:\n", kd_res_size(presults) );
 		while( !kd_res_end( presults ) ) {
 			// get the data and position of the current result item
 			pch = (airportInfo*)kd_res_item( presults, resultpos );
-			count++;
-			if(count != 5)
-			{
-				airportInfo* temp = malloc(sizeof(airportInfo));
-				temp->airportCode = pch->airportCode;
-				temp->airportName = pch->airportName;
-				temp->lat = pch->lat;
-				temp->lon = pch->lon;
-				// compute the distance
-				dist = distance(pos[0], pos[1], temp->lat, temp->lon, 'M');
-				temp->distance = dist;
+//			count++;
+//			if(count < 10)
+//			{
+			airportInfo* temp = malloc(sizeof(airportInfo));
+			temp->airportCode = pch->airportCode;
+			temp->airportName = pch->airportName;
+			temp->lat = pch->lat;
+			temp->lon = pch->lon;
+			// compute the distance
+			dist = distance(pos[0], pos[1], temp->lat, temp->lon, 'M');
+			temp->distance = dist;
 
-				//put in the list
-				nearestAirports[index] = temp;
+			//put in the list
+			nearestAirports[index] = temp;
 
-				// print out the retrieved data
-				printf( "node at (%.3f, %.3f)  and has airport=%s and code=%s and distance is %.3f\n\n",
-						resultpos[0], resultpos[1],  nearestAirports[index]->airportName, nearestAirports[index]->airportCode, dist );
+			// print out the retrieved data
+			printf( "node at (%.3f, %.3f)  and has airport=%s and code=%s and distance is %.3f\n\n",
+					resultpos[0], resultpos[1],  nearestAirports[index]->airportName, nearestAirports[index]->airportCode, dist );
 
-				index++;
-			}
+			index++;
+//			}
 
 			/* go to the next entry */
 			kd_res_next( presults );
@@ -192,42 +192,42 @@ int buildTree(struct kdtree *tree)
 
 }
 
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-/*:: This function converts decimal degrees to radians :*/
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-double deg2rad(double deg)
-{
-	return (deg * PI / 180);
-}
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-/*:: This function converts radians to decimal degrees :*/
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-double rad2deg(double rad)
-{
-	return (rad * 180 / PI);
-}
-
-double distance(double lat1, double lon1, double lat2, double lon2, char unit)
-{
-	double theta, dist;
-	theta = lon1 - lon2;
-	dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) *
-	cos(deg2rad(lat2)) * cos(deg2rad(theta));
-	dist = acos(dist);
-	dist = rad2deg(dist);
-	dist = dist * 60 * 1.1515;
-	switch(unit) {
-		case 'M':
-		break;
-		case 'K':
-		dist = dist * 1.609344;
-		break;
-		case 'N':
-		dist = dist * 0.8684;
-		break;
-	}
-	return (dist);
-}
+///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+///*:: This function converts decimal degrees to radians :*/
+///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+//double deg2rad(double deg)
+//{
+//	return (deg * PI / 180);
+//}
+///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+///*:: This function converts radians to decimal degrees :*/
+///*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+//double rad2deg(double rad)
+//{
+//	return (rad * 180 / PI);
+//}
+//
+//double distance(double lat1, double lon1, double lat2, double lon2, char unit)
+//{
+//	double theta, dist;
+//	theta = lon1 - lon2;
+//	dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) *
+//	cos(deg2rad(lat2)) * cos(deg2rad(theta));
+//	dist = acos(dist);
+//	dist = rad2deg(dist);
+//	dist = dist * 60 * 1.1515;
+//	switch(unit) {
+//		case 'M':
+//		break;
+//		case 'K':
+//		dist = dist * 1.609344;
+//		break;
+//		case 'N':
+//		dist = dist * 0.8684;
+//		break;
+//	}
+//	return (dist);
+//}
 
 
 
